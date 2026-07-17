@@ -1,0 +1,100 @@
+### SkillBridge API — happy-path walkthrough
+### Use with the VS Code "REST Client" extension. Run requests top to bottom.
+### Named requests (# @name ...) let later requests reuse values automatically.
+
+@baseUrl = http://localhost:4000
+@token = {{login.response.body.token}}
+
+### 0. Health
+GET {{baseUrl}}/health
+
+### 1. Register
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{ "name": "Ritik", "email": "ritik@example.com", "password": "secret123" }
+
+### 2. Login (token is auto-captured for the requests below)
+# @name login
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "email": "ritik@example.com", "password": "secret123" }
+
+### 3. Who am I
+GET {{baseUrl}}/api/v1/auth/me
+Authorization: Bearer {{token}}
+
+### 4. Ingest a GitHub profile
+# @name ingestGithub
+POST {{baseUrl}}/api/v1/ingest/github
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "username": "octocat" }
+
+### 5. Poll that source until status = processed (needs a working Gemini key)
+GET {{baseUrl}}/api/v1/sources/{{ingestGithub.response.body.id}}
+Authorization: Bearer {{token}}
+
+### 6. List all sources
+GET {{baseUrl}}/api/v1/sources
+Authorization: Bearer {{token}}
+
+### 7. Build the Current State from processed sources
+POST {{baseUrl}}/api/v1/profile/build
+Authorization: Bearer {{token}}
+
+### 8. Read the profile
+GET {{baseUrl}}/api/v1/profile
+Authorization: Bearer {{token}}
+
+### 9. Benchmark: level vs experience
+POST {{baseUrl}}/api/v1/benchmark
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "experienceYears": 2, "targetRole": "Senior Full Stack Engineer" }
+
+### 10. Gap analysis + learning plan
+POST {{baseUrl}}/api/v1/analysis
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "targetRole": "Senior Full Stack Engineer" }
+
+### 11. Generate gap-closing projects
+POST {{baseUrl}}/api/v1/projects/generate
+Authorization: Bearer {{token}}
+
+### 12. List generated projects
+GET {{baseUrl}}/api/v1/projects
+Authorization: Bearer {{token}}
+
+### 13. Interview readiness
+POST {{baseUrl}}/api/v1/interview/readiness
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "targetRole": "Senior Backend Engineer" }
+
+### 14. Job match against a pasted JD
+POST {{baseUrl}}/api/v1/jobmatch
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "jdText": "We are hiring a Senior Backend Engineer with Node.js, TypeScript, MongoDB and AWS to build scalable APIs and mentor the team." }
+
+### 15. Market worth (rough, low-confidence)
+POST {{baseUrl}}/api/v1/worth
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "experienceYears": 2, "location": "Bangalore, India", "targetRole": "Senior Engineer" }
+
+### 16. Career plan (job-search + income ideas)
+POST {{baseUrl}}/api/v1/career/plan
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "targetRole": "Senior Full Stack Engineer" }

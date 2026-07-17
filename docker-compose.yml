@@ -1,0 +1,16 @@
+# Local development helper: runs MongoDB for the backend.
+# The backend runs on the host (npm run dev) and talks to this DB.
+#   docker compose up -d      # start Mongo
+#   docker compose down       # stop Mongo
+services:
+  mongo:
+    image: mongo:7
+    container_name: skillbridge-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - skillbridge_mongo_data:/data/db
+
+volumes:
+  skillbridge_mongo_data:
