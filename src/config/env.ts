@@ -10,7 +10,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(4000),
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
-  CORS_ORIGIN: z.string().default("https://skill-bridgeai.vercel.app"),
+  CORS_ORIGIN: z.string().default("http://localhost:5173"),
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default("gemini-flash-latest"),
   GROQ_API_KEY: z.string().optional(),
