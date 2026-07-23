@@ -1,4 +1,4 @@
-import { type Transporter } from "nodemailer";
+import { type TransportOptions, type Transporter } from "nodemailer";
 import nodemailer from "nodemailer";
 import { env } from "./env.js";
 import { logger } from "./logger.js";
@@ -13,9 +13,8 @@ function getTransporter(): Transporter | null {
       host: env.SMTP_HOST,
       port: env.SMTP_PORT,
       secure: env.SMTP_PORT === 465, // 465 = implicit TLS; 587 = STARTTLS
-      family: 4,
       auth: { user: env.SMTP_USER, pass: env.SMTP_PASS },
-    });
+    } as TransportOptions);
   }
   return transporter;
 }
