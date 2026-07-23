@@ -11,6 +11,14 @@ const envSchema = z.object({
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
+  //Public base url of the frontend for building links(eg password reset links)
+  APP_URL: z.string().optional(),
+  //Email (SMTP). All optional: if unsend, emails are logged instead of sent.
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  MAIL_FROM: z.string().default("SkillBridge <no-reply@skillbridge.com>"),
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default("gemini-flash-latest"),
   GROQ_API_KEY: z.string().optional(),
@@ -30,7 +38,7 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
-export const isProd = env.NODE_ENV === "production";
+export const isProd = env.NODE_ENV === "production"; 
 export const isTest = env.NODE_ENV === "test";
 
 // Guard against shipping the placeholder secret to production.
@@ -41,3 +49,8 @@ if (isProd && env.JWT_SECRET.includes("insecure")) {
 
 /** Allowed CORS origins as an array (comma-separated in the env var). */
 export const corsOrigins = env.CORS_ORIGIN.split(",").map((o) => o.trim());
+
+
+//Frontend base_url for building links (eg password reset)
+
+export const appUrl = (env.APP_URL ?? corsOrigins[0] ?? "http://localhost:5173").replace(/\/$/, "")

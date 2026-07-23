@@ -19,3 +19,13 @@ export const me = asyncHandler(async (req, res) => {
   const user = await authService.getUserById(req.user.id);
   res.json({ user });
 });
+export const forgotPassword = asyncHandler(async (req, res) => {
+  await authService.requestPasswordReset(req.body);
+  // Always the same response — never reveal whether the email is registered.
+  res.json({ message: "If an account exists for that email, a reset link has been sent." });
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  await authService.resetPassword(req.body);
+  res.json({ message: "Your password has been reset. You can now sign in." });
+});
