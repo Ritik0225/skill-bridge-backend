@@ -12,6 +12,7 @@ function getTransporter(): Transporter | null {
       host: env.SMTP_HOST,
       port: env.SMTP_PORT,
       secure: env.SMTP_PORT === 465, // 465 = implicit TLS; 587 = STARTTLS
+      family: 4,
       auth: { user: env.SMTP_USER, pass: env.SMTP_PASS },
     });
   }
